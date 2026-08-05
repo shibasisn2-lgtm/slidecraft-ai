@@ -1,0 +1,11 @@
+name = "slidecraft-proxy"
+main = "worker.js"
+compatibility_date = "2024-09-23"
+workers_dev = true
+
+kv_namespaces = [
+  { binding = "RATE_LIMIT_KV", id = "2a47947b83114f758a1e8ca29aa4d5ce" }
+]
+
+[vars]
+ALLOWED_ORIGIN = "https://shibasisn2-lgtm.github.io"
