@@ -6,15 +6,26 @@
 <title>SlideCraft AI — Chat your document into a colorful PPTX</title>
 <meta name="description" content="Upload a .docx, chat with AI slide by slide, and export a colorful PowerPoint — all in your browser." />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎨</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
+<div class="bg-fx" aria-hidden="true">
+  <div class="bg-grid"></div>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+  <div class="bg-glow bg-glow-3"></div>
+</div>
+<div id="top-loader" class="top-loader" aria-hidden="true"></div>
+
 <header class="app-header">
   <div class="brand">
-    <span class="brand-mark">🎨</span>
+    <span class="brand-mark-ring"><span class="brand-mark">🎨</span></span>
     <div>
-      <h1>SlideCraft AI</h1>
+      <h1>SlideCraft <span class="brand-ai">AI</span></h1>
       <p class="tagline">Turn a document into a colorful, presentation-ready <strong>.pptx</strong> — guided by chat.</p>
     </div>
   </div>
@@ -54,8 +65,16 @@
       </select>
 
       <div class="toggle-row">
-        <label class="toggle"><input type="checkbox" id="icons-toggle" checked /> Icons</label>
-        <label class="toggle"><input type="checkbox" id="shapes-toggle" checked /> Decorative shapes</label>
+        <label class="toggle">
+          <input type="checkbox" id="icons-toggle" checked />
+          <span class="switch"><span class="switch-thumb"></span></span>
+          <span class="toggle-label">Icons</span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="shapes-toggle" checked />
+          <span class="switch"><span class="switch-thumb"></span></span>
+          <span class="toggle-label">Decorative shapes</span>
+        </label>
       </div>
 
       <label class="field-label">Color scheme</label>
@@ -112,11 +131,17 @@
       </div>
     </div>
 
-    <div id="slide-stage" class="slide-stage empty">
-      <div class="empty-state">
-        <p>Your slide preview will appear here.</p>
-        <p class="hint">Upload a document and generate an outline to get started.</p>
+    <div class="stage-wrap">
+      <div id="slide-stage" class="slide-stage empty">
+        <div class="empty-state">
+          <p>Your slide preview will appear here.</p>
+          <p class="hint">Upload a document and generate an outline to get started.</p>
+        </div>
       </div>
+      <span class="hud-corner hud-tl" aria-hidden="true"></span>
+      <span class="hud-corner hud-tr" aria-hidden="true"></span>
+      <span class="hud-corner hud-bl" aria-hidden="true"></span>
+      <span class="hud-corner hud-br" aria-hidden="true"></span>
     </div>
 
     <div id="slide-grid" class="slide-grid"></div>

@@ -136,6 +136,7 @@ const exportBtn = $("export-btn");
 const slideStage = $("slide-stage");
 const slideGrid = $("slide-grid");
 const toast = $("toast");
+const topLoader = $("top-loader");
 
 /* ---------- Toast ---------- */
 let toastTimer = null;
@@ -272,9 +273,12 @@ async function requestDeck(instruction, { isInitial } = {}) {
   chatInput.disabled = true;
   chatSendBtn.disabled = true;
   generateBtn.disabled = true;
+  topLoader.classList.add("active");
   const thinkingBubble = document.createElement("div");
   thinkingBubble.className = "chat-bubble chat-system";
-  thinkingBubble.textContent = isInitial ? "Designing your deck…" : "Updating your deck…";
+  thinkingBubble.innerHTML = `<span class="dot-loader"><span></span><span></span><span></span></span>${
+    isInitial ? "Designing your deck…" : "Updating your deck…"
+  }`;
   chatLog.appendChild(thinkingBubble);
   chatLog.scrollTop = chatLog.scrollHeight;
 
@@ -297,6 +301,7 @@ async function requestDeck(instruction, { isInitial } = {}) {
     addChatBubble("error", escapeHtml(err.message));
     showToast(err.message, "error");
   } finally {
+    topLoader.classList.remove("active");
     chatInput.disabled = false;
     chatSendBtn.disabled = false;
     updateGenerateEnabled();
