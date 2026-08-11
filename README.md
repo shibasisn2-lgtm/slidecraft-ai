@@ -1,11 +1,12 @@
 # 🎨 SlideCraft AI
 
-Chat your Word document into a colorful, ready-to-download PowerPoint — free, and no sign-up needed to use it.
+Chat your Word document into a colorful, ready-to-download PowerPoint — free to use, sign in with Google to get started.
 
 **Live app:** _(added after deployment)_
 
 ## How it works
 
+0. **Sign in with Google** — required once per session. This keeps usage accountable and protects the shared AI key from abuse.
 1. **Upload a `.docx` file** — the app reads its text locally in your browser (the file itself is never uploaded anywhere).
 2. **Style your deck** — pick a deck type (Business / Pitch / Academic / Minimal, which shapes the AI's tone), toggle icons and decorative shapes on/off, and pick a color scheme — five presets, or "Custom" with your own primary/accent color pickers. Colors and toggles apply instantly, even to an already-generated deck, with no AI call needed.
 3. **Click "Generate slide outline"** — a small proxy server sends your document to Claude (Anthropic's AI), which turns it into a well-structured slide deck (title, sections, bullet content, and a fitting icon per slide).
@@ -16,14 +17,15 @@ Chat your Word document into a colorful, ready-to-download PowerPoint — free, 
 
 This is a static site (`index.html` / `styles.css` / `app.js`) hosted free on **GitHub Pages**, plus a tiny **Cloudflare Worker** proxy (`slidecraft-proxy`, see the sibling `slidecraft-proxy/` project) that holds the Anthropic API key server-side and forwards generation requests to Claude. This means:
 
-- Visitors never need their own API key or account — the app just works.
+- Visitors never need their own API key — just a Google account to sign in with.
 - The API key is never present in any code the browser downloads, so it can't be scraped from the public site.
-- The proxy applies basic abuse protection: a fixed allowed origin (this site only), a request-size cap, and a per-IP hourly rate limit.
+- The proxy applies abuse protection: a fixed allowed origin (this site only), required + cryptographically verified Google Sign-In, a request-size cap, and a per-user hourly rate limit.
 
-## Privacy
+## Privacy & logging
 
 - Your document's text is read locally in your browser and sent only to the proxy to generate slide content — never stored on any server.
 - The proxy does not log or persist document content; it forwards the prompt to Claude and returns the structured result.
+- Signing in is required, and each request logs basic usage activity (email, name, timestamp, action, model, token counts) to a **private Google Sheet that only the site owner can access** — used purely to monitor abuse and cost, never shared or sold.
 
 ## Tech
 

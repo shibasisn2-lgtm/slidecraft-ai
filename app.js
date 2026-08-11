@@ -2,6 +2,7 @@
 
 /* ---------- Config ---------- */
 const PROXY_URL = "https://slidecraft-proxy.shibasisn2.workers.dev/generate";
+const GOOGLE_CLIENT_ID = "648168734143-pgn21o641aumu8f95jjdh4geoquqta36.apps.googleusercontent.com";
 
 /* ---------- Theme palette (preset color schemes) ---------- */
 const THEMES = {
@@ -105,6 +106,8 @@ const state = {
   deckType: "business",
   iconsEnabled: true,
   shapesEnabled: true,
+  idToken: "",
+  user: null, // { email, name, picture }
 };
 
 /* ---------- DOM refs ---------- */
@@ -137,6 +140,13 @@ const slideStage = $("slide-stage");
 const slideGrid = $("slide-grid");
 const toast = $("toast");
 const topLoader = $("top-loader");
+const authOverlay = $("auth-overlay");
+const authError = $("auth-error");
+const gSigninBtn = $("g-signin-btn");
+const userBadge = $("user-badge");
+const userAvatar = $("user-avatar");
+const userNameEl = $("user-name");
+const signOutBtn = $("sign-out-btn");
 
 /* ---------- Toast ---------- */
 let toastTimer = null;
@@ -147,6 +157,92 @@ function showToast(msg, kind) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { toast.hidden = true; }, 4200);
 }
+
+/* ---------- Google Sign-In ---------- */
+function decodeJwtPayload(token) {
+  const payload = token.split(".")[1];
+  const json = decodeURIComponent(
+    atob(payload.replace(/-/g, "+").replace(/_/g, "/"))
+      .split("")
+      .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+      .join("")
+  );
+  return JSON.parse(json);
+}
+
+function applySignedInUser(idToken, payload) {
+  state.idToken = idToken;
+  state.user = { email: payload.email, name: payload.name || payload.email, picture: payload.picture || "" };
+  localStorage.setItem("sc_id_token", idToken);
+  userAvatar.src = state.user.picture;
+  userAvatar.hidden = !state.user.picture;
+  userNameEl.textContent = state.user.name;
+  userBadge.hidden = false;
+  authOverlay.hidden = true;
+  authError.hidden = true;
+}
+
+function requireSignIn(message) {
+  state.idToken = "";
+  state.user = null;
+  localStorage.removeItem("sc_id_token");
+  userBadge.hidden = true;
+  authOverlay.hidden = false;
+  if (message) {
+    authError.textContent = message;
+    authError.hidden = false;
+  } else {
+    authError.hidden = true;
+  }
+  if (window.google?.accounts?.id) {
+    window.google.accounts.id.disableAutoSelect();
+  }
+}
+
+function handleCredentialResponse(response) {
+  try {
+    const payload = decodeJwtPayload(response.credential);
+    if (payload.exp * 1000 < Date.now()) throw new Error("Token already expired");
+    applySignedInUser(response.credential, payload);
+    showToast(`Signed in as ${payload.email}`, "success");
+  } catch (err) {
+    console.error(err);
+    requireSignIn("Sign-in failed — please try again.");
+  }
+}
+
+function initGoogleSignIn() {
+  if (!window.google?.accounts?.id) {
+    // GSI script hasn't loaded yet (slow network) — retry shortly.
+    setTimeout(initGoogleSignIn, 300);
+    return;
+  }
+  window.google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: handleCredentialResponse,
+    auto_select: true,
+  });
+  window.google.accounts.id.renderButton(gSigninBtn, { theme: "filled_blue", size: "large", shape: "pill" });
+
+  const savedToken = localStorage.getItem("sc_id_token");
+  if (savedToken) {
+    try {
+      const payload = decodeJwtPayload(savedToken);
+      if (payload.exp * 1000 > Date.now()) {
+        applySignedInUser(savedToken, payload);
+        return;
+      }
+    } catch (_) { /* fall through to showing the sign-in overlay */ }
+  }
+  authOverlay.hidden = false;
+}
+
+signOutBtn.addEventListener("click", () => {
+  requireSignIn();
+  showToast("Signed out.", "success");
+});
+
+initGoogleSignIn();
 
 /* ---------- Style controls (deck type / icons / shapes / colors) ---------- */
 deckTypeSelect.addEventListener("change", () => {
@@ -241,7 +337,11 @@ function addChatBubble(role, html) {
 }
 
 /* ---------- Proxy call ---------- */
-async function callProxy(userPrompt) {
+class AuthError extends Error {}
+
+async function callProxy(userPrompt, isInitial) {
+  if (!state.idToken) throw new AuthError("Please sign in with Google to continue.");
+
   const contextParts = [];
   contextParts.push(`DECK STYLE: ${DECK_TYPES[state.deckType] || DECK_TYPES.business}`);
   if (state.docText) {
@@ -255,11 +355,17 @@ async function callProxy(userPrompt) {
 
   const res = await fetch(PROXY_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt }),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${state.idToken}`,
+    },
+    body: JSON.stringify({ prompt, action: isInitial ? "generate" : "chat" }),
   });
 
   const data = await res.json().catch(() => ({}));
+  if (res.status === 401) {
+    throw new AuthError(data.error || "Session expired — please sign in again.");
+  }
   if (!res.ok) {
     throw new Error(data.error || `Request failed (${res.status})`);
   }
@@ -283,7 +389,7 @@ async function requestDeck(instruction, { isInitial } = {}) {
   chatLog.scrollTop = chatLog.scrollHeight;
 
   try {
-    const result = await callProxy(instruction);
+    const result = await callProxy(instruction, isInitial);
     state.deckTitle = result.deckTitle || state.deckTitle || "Untitled Deck";
     state.slides = result.slides;
     state.currentIndex = Math.min(state.currentIndex, state.slides.length - 1);
@@ -298,8 +404,12 @@ async function requestDeck(instruction, { isInitial } = {}) {
   } catch (err) {
     console.error(err);
     thinkingBubble.remove();
-    addChatBubble("error", escapeHtml(err.message));
-    showToast(err.message, "error");
+    if (err instanceof AuthError) {
+      requireSignIn(err.message);
+    } else {
+      addChatBubble("error", escapeHtml(err.message));
+      showToast(err.message, "error");
+    }
   } finally {
     topLoader.classList.remove("active");
     chatInput.disabled = false;

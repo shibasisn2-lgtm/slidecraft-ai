@@ -178,6 +178,56 @@ body { display: flex; flex-direction: column; position: relative; }
   .chip-graphic { display: none; }
 }
 
+.header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; position: relative; z-index: 1; }
+.user-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--border-strong);
+  padding: 5px 10px 5px 6px;
+  border-radius: 999px;
+}
+.user-avatar { width: 22px; height: 22px; border-radius: 50%; flex: none; }
+.user-name { max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---------- Sign-in overlay ---------- */
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(4, 3, 18, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.auth-overlay[hidden] { display: none; }
+.auth-card {
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  background: var(--surface-solid);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  box-shadow: 0 0 40px rgba(90, 140, 255, 0.35), 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+.auth-badge {
+  width: 44px;
+  height: 44px;
+  font-size: 1.3rem;
+  margin: 0 auto 14px;
+}
+.auth-card h2 { margin: 0 0 10px; font-family: "Orbitron", "Space Grotesk", sans-serif; }
+.auth-card .hint { margin-bottom: 20px; }
+#g-signin-btn { display: flex; justify-content: center; }
+.auth-error { margin-top: 16px; text-align: left; }
+
 /* ---------- Layout ---------- */
 .app-shell {
   flex: 1;
