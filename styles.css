@@ -186,6 +186,53 @@ input[type="text"]:focus, input[type="password"]:focus {
 .doc-preview-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
 .doc-excerpt { color: var(--text-dim); max-height: 70px; overflow: hidden; margin: 0; }
 
+select {
+  width: 100%;
+  padding: 9px 11px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.toggle-row { display: flex; gap: 16px; margin: 12px 0; flex-wrap: wrap; }
+.toggle { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; cursor: pointer; }
+.toggle input { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary); }
+
+.theme-picker { display: flex; gap: 8px; margin: 8px 0 4px; flex-wrap: wrap; }
+.swatch {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+}
+.swatch.active { border-color: var(--surface); box-shadow: 0 0 0 2px var(--primary); }
+.swatch-custom {
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  border: 1px dashed var(--border);
+}
+
+.custom-color-row { display: flex; gap: 16px; margin: 8px 0 4px; flex-wrap: wrap; }
+.custom-color-row[hidden] { display: none; }
+.custom-color-row .field-label { display: flex; align-items: center; gap: 8px; margin: 0; }
+.custom-color-row input[type="color"] {
+  width: 36px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  padding: 0;
+  cursor: pointer;
+  background: none;
+}
+
 .chat-card { flex: 1; display: flex; flex-direction: column; min-height: 320px; }
 .chat-log {
   flex: 1;
@@ -256,6 +303,7 @@ input[type="text"]:focus, input[type="password"]:focus {
   flex-direction: column;
   padding: 6% 7%;
   position: relative;
+  overflow: hidden;
 }
 .slide-render.layout-title, .slide-render.layout-section {
   align-items: center;
@@ -267,13 +315,63 @@ input[type="text"]:focus, input[type="password"]:focus {
   font-weight: 800;
   margin: 0 0 0.3em;
   line-height: 1.15;
+  position: relative;
+  z-index: 1;
 }
 .slide-render.layout-content .s-title { font-size: 1.5rem; }
-.slide-render .s-bullets { list-style: none; margin: 0; padding: 0; font-size: 1.05rem; line-height: 1.7; }
+.slide-render .s-bullets {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  position: relative;
+  z-index: 1;
+}
 .slide-render.layout-content .s-bullets { padding-left: 0; }
 .slide-render .s-bullets li { display: flex; gap: 10px; align-items: baseline; margin-bottom: 6px; }
 .slide-render .s-bullets li::before { content: "●"; font-size: 0.6em; flex: none; }
-.slide-render .accent-bar { position: absolute; top: 0; left: 0; right: 0; height: 10px; }
+.slide-render .accent-bar { position: absolute; top: 0; left: 0; right: 0; height: 10px; z-index: 1; }
+
+/* Icon badges — colors set inline per-slide by app.js */
+.icon-badge {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  line-height: 1;
+  flex: none;
+}
+.slide-render.layout-content .icon-badge {
+  position: absolute;
+  top: 7%;
+  right: 6%;
+  width: 14%;
+  aspect-ratio: 1;
+  font-size: 1.4rem;
+}
+.slide-render.layout-title .icon-badge,
+.slide-render.layout-section .icon-badge {
+  width: 64px;
+  height: 64px;
+  font-size: 2rem;
+  margin-bottom: 14px;
+}
+.slide-thumb .icon-badge {
+  width: 16px !important;
+  height: 16px !important;
+  font-size: 0.6rem !important;
+  margin-bottom: 3px !important;
+  top: 6% !important;
+  right: 6% !important;
+}
+
+/* Decorative background blobs — colors set inline per-slide by app.js */
+.deco-blob { position: absolute; border-radius: 50%; pointer-events: none; z-index: 0; opacity: 0.22; }
+.deco-blob-lg { width: 55%; aspect-ratio: 1; bottom: -22%; right: -14%; }
+.deco-blob-sm { width: 32%; aspect-ratio: 1; bottom: -14%; left: -10%; opacity: 0.15; }
 
 .slide-grid {
   display: grid;
@@ -329,23 +427,7 @@ input[type="text"]:focus, input[type="password"]:focus {
   color: var(--text-dim);
 }
 
-/* --- theme palettes shared by preview + export logic (see app.js THEMES) --- */
-.theme-ocean.layout-title, .theme-ocean.layout-section { background: linear-gradient(135deg,#0b5fff,#00c2d1); color: #fff; }
-.theme-ocean.layout-content { background: #eaf2ff; color: #0b1a3a; }
-.theme-ocean .accent-bar { background: #0b5fff; }
-
-.theme-sunset.layout-title, .theme-sunset.layout-section { background: linear-gradient(135deg,#ff7a45,#ffc53d); color: #2b1400; }
-.theme-sunset.layout-content { background: #fff3e6; color: #3a1f00; }
-.theme-sunset .accent-bar { background: #ff7a45; }
-
-.theme-forest.layout-title, .theme-forest.layout-section { background: linear-gradient(135deg,#1f9254,#73d13d); color: #fff; }
-.theme-forest.layout-content { background: #eaf7ee; color: #123a20; }
-.theme-forest .accent-bar { background: #1f9254; }
-
-.theme-royal.layout-title, .theme-royal.layout-section { background: linear-gradient(135deg,#6c3ce9,#ffd666); color: #fff; }
-.theme-royal.layout-content { background: #f2ecff; color: #2a1650; }
-.theme-royal .accent-bar { background: #6c3ce9; }
-
-.theme-midnight.layout-title, .theme-midnight.layout-section { background: linear-gradient(135deg,#1e2a4a,#4cd9c0); color: #fff; }
-.theme-midnight.layout-content { background: #eef0f6; color: #131b2e; }
-.theme-midnight .accent-bar { background: #1e2a4a; }
+/* Slide colors (background/text/accent/icon-badge/deco-blob fills) are computed
+   from the selected theme (preset or custom) and applied as inline styles by
+   app.js — see getActiveThemeColors() — rather than fixed CSS classes, so
+   custom color pickers and instant re-theming both work without new CSS. */

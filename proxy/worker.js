@@ -20,6 +20,12 @@ const MAX_TOKENS = 4096;
 const MAX_PROMPT_CHARS = 24000;
 const RATE_LIMIT_PER_HOUR = 30;
 
+const ICON_KEYS = [
+  "none", "growth", "idea", "target", "rocket", "team", "calendar", "check", "warning",
+  "globe", "money", "gear", "book", "star", "heart", "shield", "clock", "mail", "chart",
+  "question", "trophy", "handshake", "flag", "search", "tools",
+];
+
 const SLIDE_SCHEMA = {
   type: "object",
   properties: {
@@ -32,23 +38,26 @@ const SLIDE_SCHEMA = {
           title: { type: "string" },
           bullets: { type: "array", items: { type: "string" } },
           layout: { type: "string", enum: ["title", "section", "content"] },
-          theme: { type: "string", enum: ["ocean", "sunset", "forest", "royal", "midnight"] },
+          icon: { type: "string", enum: ICON_KEYS },
         },
-        required: ["title", "bullets", "layout", "theme"],
+        required: ["title", "bullets", "layout", "icon"],
       },
     },
   },
   required: ["deckTitle", "slides"],
 };
 
-const SYSTEM_INSTRUCTION = `You are a presentation design assistant. You turn a source document into a colorful, well-structured slide deck outline, and revise it on request.
+const SYSTEM_INSTRUCTION = `You are a presentation design assistant. You turn a source document into a well-structured slide deck outline, and revise it on request.
 Rules:
 - Break content into a logical sequence of slides: one "title" slide first, optional "section" divider slides between topics, and "content" slides with bullets.
-- Each slide needs: a concise title (max 8 words), 3-6 short punchy bullet points (max 12 words each, no full paragraphs), a "layout" (title|section|content), and a "theme" chosen from: ocean, sunset, forest, royal, midnight. Use the SAME theme across the whole deck unless the user explicitly asks for a different one or for variety.
+- Each slide needs: a concise title (max 8 words), 3-6 short punchy bullet points (max 12 words each, no full paragraphs), and a "layout" (title|section|content).
+- Each slide also needs an "icon": pick the closest match to that slide's content from this fixed set, or "none" if nothing fits well: ${ICON_KEYS.join(", ")}. The app decides whether to actually display icons, so always pick your best match regardless.
 - The very first slide must have layout "title" and only 0-1 bullets (a subtitle-like line is fine, or none).
+- Match the tone/structure to any DECK STYLE instruction given in the prompt. If none is given, default to clear, professional business language.
 - Keep language crisp and presentation-ready.
 - When the user asks for a change, apply ONLY that change and keep everything else the same. Always return the FULL deck (every slide), never a partial list.
 - Never invent a wildly different topic than the source document unless explicitly asked.
+- Colors/theming are handled outside of you — never mention colors or themes in slide content.
 - Always call the return_deck tool with the result. Never reply in plain text.`;
 
 function corsHeaders(origin, allowedOrigin) {

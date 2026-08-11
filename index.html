@@ -40,20 +40,54 @@
         </div>
         <p id="doc-excerpt" class="doc-excerpt"></p>
       </div>
+    </section>
+
+    <section class="card" id="style-card">
+      <h2><span class="step-num">2</span> Style your deck</h2>
+
+      <label class="field-label" for="deck-type">Deck type</label>
+      <select id="deck-type">
+        <option value="business" selected>Business — clear &amp; professional</option>
+        <option value="pitch">Pitch / Creative — punchy &amp; energetic</option>
+        <option value="academic">Academic — formal &amp; structured</option>
+        <option value="minimal">Minimal — plain, no fluff</option>
+      </select>
+
+      <div class="toggle-row">
+        <label class="toggle"><input type="checkbox" id="icons-toggle" checked /> Icons</label>
+        <label class="toggle"><input type="checkbox" id="shapes-toggle" checked /> Decorative shapes</label>
+      </div>
+
+      <label class="field-label">Color scheme</label>
+      <div class="theme-picker" id="theme-picker">
+        <button type="button" class="swatch active" data-theme="ocean" title="Ocean" style="background:linear-gradient(135deg,#0B5FFF,#00C2D1)"></button>
+        <button type="button" class="swatch" data-theme="sunset" title="Sunset" style="background:linear-gradient(135deg,#FF7A45,#FFC53D)"></button>
+        <button type="button" class="swatch" data-theme="forest" title="Forest" style="background:linear-gradient(135deg,#1F9254,#73D13D)"></button>
+        <button type="button" class="swatch" data-theme="royal" title="Royal" style="background:linear-gradient(135deg,#6C3CE9,#FFD666)"></button>
+        <button type="button" class="swatch" data-theme="midnight" title="Midnight" style="background:linear-gradient(135deg,#1E2A4A,#4CD9C0)"></button>
+        <button type="button" class="swatch swatch-custom" data-theme="custom" title="Custom">🎨</button>
+      </div>
+      <div class="custom-color-row" id="custom-color-row" hidden>
+        <label class="field-label" for="custom-primary">Primary <input type="color" id="custom-primary" value="#6C3CE9" /></label>
+        <label class="field-label" for="custom-accent">Accent <input type="color" id="custom-accent" value="#FFD666" /></label>
+      </div>
+      <p class="hint">Colors &amp; toggles apply instantly to any existing deck — no need to regenerate.</p>
+
       <button id="generate-btn" class="btn btn-primary" disabled>Generate slide outline</button>
     </section>
 
     <section class="card chat-card" id="chat-card">
-      <h2><span class="step-num">2</span> Guide it slide by slide</h2>
+      <h2><span class="step-num">3</span> Guide it slide by slide</h2>
       <div id="chat-log" class="chat-log">
         <div class="chat-bubble chat-system">
           <p>Hi! Once you've uploaded a document, click <em>Generate slide outline</em>. Then tell me things like:</p>
           <ul>
             <li>"make slide 3 shorter"</li>
-            <li>"change the theme to sunset"</li>
             <li>"add a slide about next steps"</li>
             <li>"combine slides 2 and 3"</li>
+            <li>"make the tone more energetic"</li>
           </ul>
+          <p class="hint">(Colors, icons &amp; deck type are controlled in step 2, not chat.)</p>
         </div>
       </div>
       <form id="chat-form" class="chat-form">

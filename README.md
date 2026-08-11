@@ -7,9 +7,10 @@ Chat your Word document into a colorful, ready-to-download PowerPoint — free, 
 ## How it works
 
 1. **Upload a `.docx` file** — the app reads its text locally in your browser (the file itself is never uploaded anywhere).
-2. **Click "Generate slide outline"** — a small proxy server sends your document to Claude (Anthropic's AI), which turns it into a colorful slide deck (title, sections, bullet content).
-3. **Chat to refine it, slide by slide** — e.g. "make slide 3 shorter", "change the theme to sunset", "add a slide about next steps".
-4. **Download the `.pptx`** — click the download button to get a real PowerPoint file, styled with one of five color themes.
+2. **Style your deck** — pick a deck type (Business / Pitch / Academic / Minimal, which shapes the AI's tone), toggle icons and decorative shapes on/off, and pick a color scheme — five presets, or "Custom" with your own primary/accent color pickers. Colors and toggles apply instantly, even to an already-generated deck, with no AI call needed.
+3. **Click "Generate slide outline"** — a small proxy server sends your document to Claude (Anthropic's AI), which turns it into a well-structured slide deck (title, sections, bullet content, and a fitting icon per slide).
+4. **Chat to refine it, slide by slide** — e.g. "make slide 3 shorter", "add a slide about next steps", "combine slides 2 and 3".
+5. **Download the `.pptx`** — click the download button to get a real PowerPoint file with your chosen colors, icons, and decorative accent shapes baked in.
 
 ## Architecture
 
@@ -38,6 +39,6 @@ Just open `index.html` in a browser, or serve the folder with any static file se
 ## Limitations
 
 - Uses a small/fast model tier by design (fast + cheap) — output quality is good for outlines but won't match a professional designer.
-- No AI-generated images; visuals are colorful layout/typography, not illustrations or photos.
+- Visuals are icons (from a curated emoji-style set) and colorful geometric accent shapes — no AI-generated illustrations or real photos, to keep the app free and key-free for visitors.
 - `.docx` input only (not `.doc`, `.pdf`, or `.txt`) for now.
 - Rate-limited to protect the shared API key from abuse — heavy use may hit the per-IP hourly cap.
