@@ -22,13 +22,40 @@
 <div id="top-loader" class="top-loader" aria-hidden="true"></div>
 
 <header class="app-header">
+  <div class="header-circuit" aria-hidden="true"></div>
   <div class="brand">
-    <span class="brand-mark-ring"><span class="brand-mark">🎨</span></span>
-    <div>
-      <h1>SlideCraft <span class="brand-ai">AI</span></h1>
+    <div class="brand-text">
+      <h1 class="brand-title">SlideCraft <span class="brand-ai">AI</span></h1>
+      <div class="brand-divider"></div>
       <p class="tagline">Turn a document into a colorful, presentation-ready <strong>.pptx</strong> — guided by chat.</p>
     </div>
   </div>
+  <svg class="chip-graphic" viewBox="0 0 140 120" aria-hidden="true">
+    <defs>
+      <linearGradient id="chipGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#3a4fd6" />
+        <stop offset="100%" stop-color="#161238" />
+      </linearGradient>
+    </defs>
+    <g stroke="#7fa8ff" stroke-width="2" opacity="0.85">
+      <line x1="40" y1="8" x2="40" y2="26" />
+      <line x1="60" y1="8" x2="60" y2="26" />
+      <line x1="80" y1="8" x2="80" y2="26" />
+      <line x1="100" y1="8" x2="100" y2="26" />
+      <line x1="40" y1="112" x2="40" y2="94" />
+      <line x1="60" y1="112" x2="60" y2="94" />
+      <line x1="80" y1="112" x2="80" y2="94" />
+      <line x1="100" y1="112" x2="100" y2="94" />
+      <line x1="14" y1="40" x2="30" y2="40" />
+      <line x1="14" y1="60" x2="30" y2="60" />
+      <line x1="14" y1="80" x2="30" y2="80" />
+      <line x1="110" y1="40" x2="126" y2="40" />
+      <line x1="110" y1="60" x2="126" y2="60" />
+      <line x1="110" y1="80" x2="126" y2="80" />
+    </g>
+    <rect x="30" y="26" width="80" height="68" rx="9" fill="url(#chipGrad)" stroke="#9db6ff" stroke-width="1.5" />
+    <text x="70" y="67" text-anchor="middle" font-family="Orbitron, sans-serif" font-weight="800" font-size="24" fill="#eef2ff">AI</text>
+  </svg>
 </header>
 
 <div id="toast" class="toast" hidden></div>
